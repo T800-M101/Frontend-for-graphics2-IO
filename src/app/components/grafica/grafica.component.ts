@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Socket } from 'ngx-socket-io';
 import { Subscription } from 'rxjs';
+import { ChartConfiguration, ChartData } from 'chart.js';
 
 @Component({
   selector: 'app-grafica',
@@ -17,21 +17,28 @@ export class GraficaComponent implements OnInit, OnDestroy {
   private socket = new Socket({ url: 'http://localhost:5000' });
   private socketSub$!: Subscription;
 
-  public lineChartData: ChartConfiguration['data'] = {
+  public barChartData: ChartData<'bar'> = {
+    labels: ['Question 1', 'Question 2', 'Question 3', 'Question 4'],
     datasets: [
-      {
-        data: [0, 0, 0, 0],
-        label: 'Sales',
-        backgroundColor: 'rgba(255,0,0,0.3)',
-        borderColor: 'red',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-        fill: 'origin',
-      },
+      { data: [8, 5, 0, 0], label: 'Questions' },
     ],
-    labels: ['January', 'February', 'March', 'April'],
+  };
+
+  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
+    // We use these empty structures as placeholders for dynamic theming.
+    scales: {
+      x: {},
+      y: {
+        min: 4,
+        max: 18
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+     
+    },
   };
 
   constructor(private http: HttpClient) { }
@@ -50,13 +57,13 @@ export class GraficaComponent implements OnInit, OnDestroy {
 
   getData(): any {
     this.http.get('http://localhost:5000/api/graphic').subscribe((data: any) => {
-      this.lineChartData = { ...data };
+      this.barChartData = { ...data };
     });
   }
 
   listenSocket(): void {
     this.socketSub$ = this.socket.fromEvent('change-graphic').subscribe((data: any) => {
-      this.lineChartData = data;
+      this.barChartData = data;
     });
   }
 }

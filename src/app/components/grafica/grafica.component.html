@@ -1,13 +1,13 @@
-<h1>Dynamic graphics</h1>
+<h1>Survey Graphic</h1>
 <hr>
 
 <div class="row">
     <div class="col-md-6">
-        <canvas baseChart 
-                width="400"
-                height="400"
-                [data]="lineChartData"
-                [type]="'line'">
-        </canvas>
+        <canvas
+            baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="'bar'">
+  </canvas>
     </div>
 </div>
